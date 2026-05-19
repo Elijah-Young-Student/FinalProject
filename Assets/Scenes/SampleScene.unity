@@ -377,6 +377,26 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.03330008, y: 0.04565951, z: 0.0056816936}
   m_Center: {x: -0.08712704, y: 0.0145, z: 0.001}
+--- !u!114 &68458183
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 389924907}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42d4fdfad38aba143939d57345d8c679, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  healthDialR: {fileID: 389924906}
+  healthDialL: {fileID: 389924905}
+  currentHDRRot: {x: 0, y: 0, z: 0}
+  targetHDRRot: {x: 0, y: 0, z: 0}
+  currentHDLRot: {x: 0, y: 0, z: 0}
+  targetHDLRot: {x: 0, y: 0, z: 0}
+  health: 90
+  speed: 25
 --- !u!1 &68480442
 GameObject:
   m_ObjectHideFlags: 0
@@ -1387,7 +1407,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 99cd5dace5fc81047a1c2f482439fd60, type: 3}
       propertyPath: m_Name
-      value: Barbarian Health.002
+      value: Barbarian Health
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1396,6 +1416,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 99cd5dace5fc81047a1c2f482439fd60, type: 3}
       insertIndex: -1
       addedObject: {fileID: 389924911}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 99cd5dace5fc81047a1c2f482439fd60, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 68458183}
     - targetCorrespondingSourceObject: {fileID: 6219161318787881635, guid: 99cd5dace5fc81047a1c2f482439fd60, type: 3}
       insertIndex: -1
       addedObject: {fileID: 389924909}
@@ -1999,13 +2022,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.5084629, y: 0, z: 0, w: 0.8610839}
-  m_LocalPosition: {x: -0.3795592, y: 7.285, z: -2.588}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: -2.02, y: 6.547, z: -1.256}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 61.123, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!95 &519420033
 Animator:
   serializedVersion: 5
@@ -2041,6 +2064,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   anima: {fileID: 0}
   Position: 1
+  speed: 25
   inspect: 0
   currentLoc: {x: 0, y: 0, z: 0}
   targetLoc: {x: 0, y: 0, z: 0}
@@ -2678,7 +2702,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 8129c1bcc1cb7564a815e77784c8afa7, type: 3}
       propertyPath: m_Name
-      value: Barbarian CP Dial.002
+      value: Barbarian CP Dial
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2690,6 +2714,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4284265926381754651, guid: 8129c1bcc1cb7564a815e77784c8afa7, type: 3}
       insertIndex: -1
       addedObject: {fileID: 565598461}
+    - targetCorrespondingSourceObject: {fileID: 4284265926381754651, guid: 8129c1bcc1cb7564a815e77784c8afa7, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 565598469}
     - targetCorrespondingSourceObject: {fileID: -1281700104397665434, guid: 8129c1bcc1cb7564a815e77784c8afa7, type: 3}
       insertIndex: -1
       addedObject: {fileID: 565598460}
@@ -2779,6 +2806,21 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2.0527034, y: 1.9899812, z: 0.2434486}
   m_Center: {x: -0.006553746, y: -0.00601728, z: -0.012128096}
+--- !u!114 &565598469
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 565598458}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0dd0295f52e6b9488de5376c53204ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentRot: {x: 0, y: 0, z: 0}
+  targetRot: {x: 0, y: 0, z: 0}
+  speed: 25
 --- !u!1001 &571195495
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4167,7 +4209,7 @@ GameObject:
   - component: {fileID: 971953426}
   - component: {fileID: 971953427}
   m_Layer: 0
-  m_Name: Mighy Blow
+  m_Name: Mighty Blow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5095,7 +5137,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 57b979542072a834983fd6a76496877b, type: 3}
       propertyPath: m_Name
-      value: Barbarian Character Sheet.002
+      value: Barbarian Character Sheet
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 57b979542072a834983fd6a76496877b, type: 3}
       propertyPath: m_TagString
@@ -7778,7 +7820,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 6fdf081aeb9809b48b7a26f04c89a6d6, type: 3}
       propertyPath: m_Name
-      value: Barbarian character Board.002
+      value: Barbarian Character Board
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
