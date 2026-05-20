@@ -126,8 +126,8 @@ public class CameraAnimationController : MonoBehaviour
 
         currentLoc = transform.position;
         currentRot = transform.eulerAngles;
-        transform.position = Vector3.MoveTowards(transform.position, targetLoc, speed);
-        transform.rotation = Quaternion.RotateTowards(Quaternion.Euler(currentRot), Quaternion.Euler(targetRot), speed);
+        transform.position = Vector3.MoveTowards(transform.position, targetLoc, speed/2 * Time.deltaTime);
+        transform.rotation = Quaternion.RotateTowards(Quaternion.Euler(currentRot), Quaternion.Euler(targetRot), speed/2 * speed * Time.deltaTime);
     }
 
     private void InputHandler()

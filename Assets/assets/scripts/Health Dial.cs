@@ -42,31 +42,31 @@ public class HealthDial : MonoBehaviour
         switch (Mathf.RoundToInt(health / 10 % 10))
         {
             case 0:
-                targetHDLRot = new Vector3();
+                targetHDLRot = new Vector3(270, 0f, 0);
                 break;
             case 1:
-                targetHDLRot = new Vector3();
+                targetHDLRot = new Vector3(270, 0f, 0);
                 break;
             case 2:
-                targetHDLRot = new Vector3();
+                targetHDLRot = new Vector3(270, 0f, 0);
                 break;
             case 3:
-                targetHDLRot = new Vector3();
+                targetHDLRot = new Vector3(270, 0f, 0);
                 break;
             case 4:
-                targetHDLRot = new Vector3();
+                targetHDLRot = new Vector3(270, 0f, 0);
                 break;
             case 5:
-                targetHDLRot = new Vector3();
+                targetHDLRot = new Vector3(270, 0f, 0);
                 break;
             case 6:
-                targetHDLRot = new Vector3();
+                targetHDLRot = new Vector3(270, 0f, 0);
                 break;
             case 7:
-                targetHDLRot = new Vector3();
+                targetHDLRot = new Vector3(270, 0f, 0);
                 break;
             case 8:
-                targetHDLRot = new Vector3();
+                targetHDLRot = new Vector3(270, 0f, 0);
                 break;
             case 9:
                 targetHDLRot = new Vector3(270, 180, 0);
@@ -81,31 +81,31 @@ public class HealthDial : MonoBehaviour
                 targetHDRRot = new Vector3(270, 180, 0);
                 break;
             case 1:
-                targetHDRRot = new Vector3();
+                targetHDRRot = new Vector3(270, 216f, 0);
                 break;
             case 2:
-                targetHDRRot = new Vector3();
+                targetHDRRot = new Vector3(270, 252f, 0);
                 break;
             case 3:
-                targetHDRRot = new Vector3();
+                targetHDRRot = new Vector3(270, 288f, 0);
                 break;
             case 4:
-                targetHDRRot = new Vector3();
+                targetHDRRot = new Vector3(270, 324f, 0);
                 break;
             case 5:
-                targetHDRRot = new Vector3();
+                targetHDRRot = new Vector3(270, 0f, 0);
                 break;
             case 6:
-                targetHDRRot = new Vector3();
+                targetHDRRot = new Vector3(270, 34.55f, 0);
                 break;
             case 7:
-                targetHDRRot = new Vector3();
+                targetHDRRot = new Vector3(270, 70.55f, 0);
                 break;
             case 8:
-                targetHDRRot = new Vector3();
+                targetHDRRot = new Vector3(270, 106.55f, 0);
                 break;
             case 9:
-                targetHDRRot = new Vector3();
+                targetHDRRot = new Vector3(270, 144f, 0);
                 break;
         }
     }
