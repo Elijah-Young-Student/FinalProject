@@ -8,8 +8,7 @@ public class CPDial : MonoBehaviour
     public Vector3 targetRot;
     public float speed = 25;
 
-    public enum CPValues { Zero = 0, One = 1, Two = 2, Three = 3, Four = 4, Five = 5, Six = 6, Seven = 7, Eight = 8, Nine = 9, Ten = 10, Eleven = 11, Twelve = 12, Thirteen = 13, Fourteen = 14, Fifteen = 15 }
-
+    public int CP;
     private void Start()
     {
         currentRot = transform.eulerAngles;
@@ -18,60 +17,62 @@ public class CPDial : MonoBehaviour
 
     private void Update()
     {
+        // SetCP(CP);
         currentRot = transform.eulerAngles;
         transform.rotation = Quaternion.RotateTowards(Quaternion.Euler(currentRot), Quaternion.Euler(targetRot), speed * Time.deltaTime);
     }
 
-    public void SetTargetRotation(CPValues value)
+    public void SetCP(int CP)
     {
-        switch (value)
+        this.CP = CP;
+        switch (CP)
         {
-            case CPValues.Zero:
+            case 0:
                 targetRot = new Vector3(0, 180, 0);
                 break;
-            case CPValues.One:
+            case 1:
                 targetRot = new Vector3(0, 202.3f, 0);
                 break;
-            case CPValues.Two:
+            case 2:
                 targetRot = new Vector3(0, 224.8f, 0);
                 break;
-            case CPValues.Three:
+            case 3:
                 targetRot = new Vector3(0, 247.3f, 0);
                 break;
-            case CPValues.Four:
+            case 4:
                 targetRot = new Vector3(0, 269.6f, 0);
                 break;
-            case CPValues.Five:
+            case 5:
                 targetRot = new Vector3(0, 292.8f, 0);
                 break;
-            case CPValues.Six:
+            case 6:
                 targetRot = new Vector3(0, 314.8f, 0);
                 break;
-            case CPValues.Seven:
+            case 7:
                 targetRot = new Vector3(0, 337.3f, 0);
                 break;
-            case CPValues.Eight:
+            case 8:
                 targetRot = new Vector3(0, 0, 0);
                 break;
-            case CPValues.Nine:
+            case 9:
                 targetRot = new Vector3(0, 22.5f, 0);
                 break;
-            case CPValues.Ten:
+            case 10:
                 targetRot = new Vector3(0, 43.2f, 0);
                 break;
-            case CPValues.Eleven:
+            case 11:
                 targetRot = new Vector3(0, 65.8f, 0);
                 break;
-            case CPValues.Twelve:
+            case 12:
                 targetRot = new Vector3(0, 87.3f, 0);
                 break;
-            case CPValues.Thirteen:
+            case 13:
                 targetRot = new Vector3(0, 110.3f, 0);
                 break;
-            case CPValues.Fourteen:
+            case 14:
                 targetRot = new Vector3(0, 132.8f, 0);
                 break;
-            case CPValues.Fifteen:
+            case 15:
                 targetRot = new Vector3(0, 155.8f, 0);
                 break;
         }

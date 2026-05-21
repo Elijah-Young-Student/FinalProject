@@ -27,6 +27,7 @@ public class HealthDial : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // SetHealth(health);
         float step = speed * Time.deltaTime;
         currentHDLRot = healthDialL.transform.eulerAngles;
         healthDialL.transform.rotation = Quaternion.RotateTowards(Quaternion.Euler(currentHDLRot), Quaternion.Euler(targetHDLRot), step);
@@ -42,34 +43,34 @@ public class HealthDial : MonoBehaviour
         switch (Mathf.RoundToInt(health / 10 % 10))
         {
             case 0:
-                targetHDLRot = new Vector3(270, 0f, 0);
+                targetHDLRot = new Vector3(90, 216f, 0);
                 break;
             case 1:
-                targetHDLRot = new Vector3(270, 0f, 0);
+                targetHDLRot = new Vector3(90, 252f, 0);
                 break;
             case 2:
-                targetHDLRot = new Vector3(270, 0f, 0);
+                targetHDLRot = new Vector3(90, 289.5f, 0);
                 break;
             case 3:
-                targetHDLRot = new Vector3(270, 0f, 0);
+                targetHDLRot = new Vector3(90, 325.5f, 0);
                 break;
             case 4:
-                targetHDLRot = new Vector3(270, 0f, 0);
+                targetHDLRot = new Vector3(90, 0f, 0);
                 break;
             case 5:
-                targetHDLRot = new Vector3(270, 0f, 0);
+                targetHDLRot = new Vector3(90, 36f, 0);
                 break;
             case 6:
-                targetHDLRot = new Vector3(270, 0f, 0);
+                targetHDLRot = new Vector3(90, 72f, 0);
                 break;
             case 7:
-                targetHDLRot = new Vector3(270, 0f, 0);
+                targetHDLRot = new Vector3(90, 108f, 0);
                 break;
             case 8:
-                targetHDLRot = new Vector3(270, 0f, 0);
+                targetHDLRot = new Vector3(90, 144f, 0);
                 break;
             case 9:
-                targetHDLRot = new Vector3(270, 180, 0);
+                targetHDLRot = new Vector3(90, 180, 0);
                 break;
 
         }
@@ -78,34 +79,34 @@ public class HealthDial : MonoBehaviour
         switch (Mathf.RoundToInt(health % 10))
         {
             case 0:
-                targetHDRRot = new Vector3(270, 180, 0);
+                targetHDRRot = new Vector3(90, 180, 0);
                 break;
             case 1:
-                targetHDRRot = new Vector3(270, 216f, 0);
+                targetHDRRot = new Vector3(90, 216f, 0);
                 break;
             case 2:
-                targetHDRRot = new Vector3(270, 252f, 0);
+                targetHDRRot = new Vector3(90, 252f, 0);
                 break;
             case 3:
-                targetHDRRot = new Vector3(270, 288f, 0);
+                targetHDRRot = new Vector3(90, 288f, 0);
                 break;
             case 4:
-                targetHDRRot = new Vector3(270, 324f, 0);
+                targetHDRRot = new Vector3(90, 324f, 0);
                 break;
             case 5:
-                targetHDRRot = new Vector3(270, 0f, 0);
+                targetHDRRot = new Vector3(90, 0f, 0);
                 break;
             case 6:
-                targetHDRRot = new Vector3(270, 34.55f, 0);
+                targetHDRRot = new Vector3(90, 34.55f, 0);
                 break;
             case 7:
-                targetHDRRot = new Vector3(270, 70.55f, 0);
+                targetHDRRot = new Vector3(90, 70.55f, 0);
                 break;
             case 8:
-                targetHDRRot = new Vector3(270, 106.55f, 0);
+                targetHDRRot = new Vector3(90, 106.55f, 0);
                 break;
             case 9:
-                targetHDRRot = new Vector3(270, 144f, 0);
+                targetHDRRot = new Vector3(90, 144f, 0);
                 break;
         }
     }

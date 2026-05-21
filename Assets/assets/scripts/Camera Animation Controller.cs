@@ -7,7 +7,7 @@ public class CameraAnimationController : MonoBehaviour
     public Animator anima;
     public int Position = 1;
 
-    public float speed = 25;
+    public float speed = 15;
 
     public bool inspect;
     public Vector3 currentLoc;
@@ -27,6 +27,7 @@ public class CameraAnimationController : MonoBehaviour
 
     void Update()
     {
+
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
@@ -36,7 +37,7 @@ public class CameraAnimationController : MonoBehaviour
 
             if (Input.GetMouseButtonDown(0))
             {
-                print(item.name);
+                // print(item.name);
                 if (!inspect)
                 {
                     switch (item.name)
@@ -113,6 +114,18 @@ public class CameraAnimationController : MonoBehaviour
                             inspect = true;
                             anima.enabled = false;
                             break;
+                        case "Barbarian Character Board":
+                            targetLoc = new Vector3(-0.133000001f, 6.03999996f, -1.5572741f);
+                            targetRot = new Vector3(90, 0, 0);
+                            inspect = true;
+                            anima.enabled = false;
+                            break;
+                        case "Barbarian Turn Card":
+                            targetLoc = new Vector3(0, 0, 0);
+                            targetRot = new Vector3(90, 0, 0);
+                            inspect = true;
+                            anima.enabled = false;
+                            break;
                     }
                 }
                 else if (inspect)
@@ -126,8 +139,8 @@ public class CameraAnimationController : MonoBehaviour
 
         currentLoc = transform.position;
         currentRot = transform.eulerAngles;
-        transform.position = Vector3.MoveTowards(transform.position, targetLoc, speed/2 * Time.deltaTime);
-        transform.rotation = Quaternion.RotateTowards(Quaternion.Euler(currentRot), Quaternion.Euler(targetRot), speed/2 * speed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, targetLoc, speed / 2 * Time.deltaTime);
+        transform.rotation = Quaternion.RotateTowards(Quaternion.Euler(currentRot), Quaternion.Euler(targetRot), speed / 2 * speed * Time.deltaTime);
     }
 
     private void InputHandler()

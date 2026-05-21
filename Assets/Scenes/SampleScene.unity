@@ -1921,8 +1921,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -2.02, y: 6.547, z: -1.256}
+  m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: -0.133, y: 6.04, z: -1.5572741}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2720,6 +2720,7 @@ MonoBehaviour:
   currentRot: {x: 0, y: 0, z: 0}
   targetRot: {x: 0, y: 0, z: 0}
   speed: 25
+  CP: 0
 --- !u!1001 &571195495
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7060,6 +7061,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1777146682}
+  - component: {fileID: 1777146683}
   m_Layer: 0
   m_Name: Barbarian
   m_TagString: Untagged
@@ -7096,6 +7098,21 @@ Transform:
   - {fileID: 1261414493}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1777146683
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1777146681}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 079c90d6f280c014292cf509ccfee8db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CPDial: {fileID: 565598459}
+  HealthDial: {fileID: 919132149409445238}
+  cardManager: {fileID: 0}
 --- !u!1 &1796147833
 GameObject:
   m_ObjectHideFlags: 0

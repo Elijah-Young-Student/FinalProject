@@ -4,7 +4,7 @@ using Unity.Burst.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class CharacterSheetFlip : MonoBehaviour
+public class FlipGameObject : MonoBehaviour
 {
     public Animator anima;
     public bool flipped = false;
