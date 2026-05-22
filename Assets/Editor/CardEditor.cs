@@ -8,6 +8,13 @@ public class CardEditor : Editor
     {
         Card card = (Card)target;
 
+        // Sync cardName from the GameObject name
+        if (card.cardName != card.name)
+        {
+            card.cardName = card.name;
+            EditorUtility.SetDirty(card);
+        }
+
         Color bgColor = GetBackgroundColor(card.actionType);
 
         GUI.backgroundColor = bgColor;
@@ -29,13 +36,12 @@ public class CardEditor : Editor
             serializedObject.FindProperty("cardPrefab")
         );
 
+        // Display cardName as read-only since it mirrors the GameObject name
+        EditorGUI.BeginDisabledGroup(true);
         EditorGUILayout.PropertyField(
             serializedObject.FindProperty("cardName")
         );
-
-        EditorGUILayout.PropertyField(
-            serializedObject.FindProperty("description")
-        );
+        EditorGUI.EndDisabledGroup();
 
         EditorGUILayout.PropertyField(
             serializedObject.FindProperty("cost")
@@ -90,9 +96,6 @@ public class CardEditor : Editor
 
             case Card.ActionType.RollPhase:
                 return new Color(1f, 0.7f, 0.3f);
-
-            case Card.ActionType.DefensivePhase:
-                return new Color(0.5f, 1f, 0.5f);
 
             default:
                 return Color.white;

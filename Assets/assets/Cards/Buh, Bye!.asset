@@ -13,9 +13,8 @@ MonoBehaviour:
   m_Name: Buh, Bye!
   m_EditorClassIdentifier: 
   cardPrefab: {fileID: 0}
-  cardName: 
-  description: 
-  cost: 0
+  cardName: Buh, Bye!
+  cost: 2
   cardDraws: 0
   cardsToDraw: 0
   CPChange: 0

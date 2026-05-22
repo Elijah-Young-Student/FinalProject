@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: Sturdy Blow III
   m_EditorClassIdentifier: 
   cardPrefab: {fileID: 0}
-  cardName: 
-  description: 
+  cardName: Sturdy Blow III
   cost: 0
   cardDraws: 0
   cardsToDraw: 0

@@ -13,12 +13,11 @@ MonoBehaviour:
   m_Name: Twice As Wild!
   m_EditorClassIdentifier: 
   cardPrefab: {fileID: 0}
-  cardName: 
-  description: 
-  cost: 0
+  cardName: Twice As Wild!
+  cost: 3
   cardDraws: 0
   cardsToDraw: 0
   CPChange: 0
   CPToGain: 0
-  actionType: 0
-  cardType: 0
+  actionType: 2
+  cardType: 1

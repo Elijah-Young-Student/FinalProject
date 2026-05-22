@@ -14,11 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardPrefab: {fileID: 0}
   cardName: 
-  description: 
-  cost: 0
+  cost: 3
   cardDraws: 0
   cardsToDraw: 0
   CPChange: 0
   CPToGain: 0
-  actionType: 0
+  actionType: 1
   cardType: 0

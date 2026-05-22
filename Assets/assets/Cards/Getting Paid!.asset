@@ -13,12 +13,11 @@ MonoBehaviour:
   m_Name: Getting Paid!
   m_EditorClassIdentifier: 
   cardPrefab: {fileID: 0}
-  cardName: 
-  description: 
+  cardName: Getting Paid!
   cost: 0
   cardDraws: 0
   cardsToDraw: 0
-  CPChange: 0
-  CPToGain: 0
+  CPChange: 1
+  CPToGain: 2
   actionType: 0
-  cardType: 0
+  cardType: 1

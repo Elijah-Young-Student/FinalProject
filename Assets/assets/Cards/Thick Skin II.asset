@@ -13,12 +13,11 @@ MonoBehaviour:
   m_Name: Thick Skin II
   m_EditorClassIdentifier: 
   cardPrefab: {fileID: 0}
-  cardName: 
-  description: 
-  cost: 0
+  cardName: Thick Skin II
+  cost: 3
   cardDraws: 0
   cardsToDraw: 0
   CPChange: 0
   CPToGain: 0
-  actionType: 0
+  actionType: 1
   cardType: 0

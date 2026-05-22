@@ -5,10 +5,7 @@ public class Card : ScriptableObject
 {
     public GameObject cardPrefab;
 
-    public string cardName;
-
-    [TextArea(3, 5)]
-    public string description;
+    public string cardName = "Dont touch just name the card what you want it called";
 
     public int cost;
 
@@ -28,7 +25,6 @@ public class Card : ScriptableObject
     {
         Instant,
         MainPhase,
-        DefensivePhase,
         RollPhase,
         Passive
     }

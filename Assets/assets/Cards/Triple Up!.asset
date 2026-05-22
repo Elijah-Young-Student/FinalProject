@@ -13,12 +13,11 @@ MonoBehaviour:
   m_Name: Triple Up!
   m_EditorClassIdentifier: 
   cardPrefab: {fileID: 0}
-  cardName: 
-  description: 
-  cost: 0
-  cardDraws: 0
-  cardsToDraw: 0
+  cardName: Triple Up!
+  cost: 2
+  cardDraws: 1
+  cardsToDraw: 3
   CPChange: 0
   CPToGain: 0
   actionType: 0
-  cardType: 0
+  cardType: 1

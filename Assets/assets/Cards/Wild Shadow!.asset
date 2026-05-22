@@ -10,15 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9a4b131f358c05342aedb3c0f9c4ff06, type: 3}
-  m_Name: What Status Efects
+  m_Name: Wild Shadow!
   m_EditorClassIdentifier: 
   cardPrefab: {fileID: 0}
-  cardName: 
-  description: 
-  cost: 0
+  cardName: Wild Shadow!
+  cost: 3
   cardDraws: 0
   cardsToDraw: 0
   CPChange: 0
   CPToGain: 0
-  actionType: 0
-  cardType: 0
+  actionType: 2
+  cardType: 1

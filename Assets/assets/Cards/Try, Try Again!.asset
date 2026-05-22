@@ -13,12 +13,11 @@ MonoBehaviour:
   m_Name: Try, Try Again!
   m_EditorClassIdentifier: 
   cardPrefab: {fileID: 0}
-  cardName: 
-  description: 
-  cost: 0
+  cardName: Try, Try Again!
+  cost: 1
   cardDraws: 0
   cardsToDraw: 0
   CPChange: 0
   CPToGain: 0
-  actionType: 0
-  cardType: 0
+  actionType: 2
+  cardType: 1
