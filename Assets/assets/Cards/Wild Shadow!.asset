@@ -16,8 +16,10 @@ MonoBehaviour:
   cardName: Wild Shadow!
   cost: 3
   cardDraws: 0
-  cardsToDraw: 0
+  cardsToDraw1: 0
+  cardsToDraw2: 0
   CPChange: 0
-  CPToGain: 0
+  CPToGain1: 0
+  CPToGain2: 0
   actionType: 2
   cardType: 1

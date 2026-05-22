@@ -55,7 +55,11 @@ public class CardEditor : Editor
         if (cardDraws.boolValue)
         {
             EditorGUILayout.PropertyField(
-                serializedObject.FindProperty("cardsToDraw")
+                serializedObject.FindProperty("cardsToDraw1")
+            );
+
+            EditorGUILayout.PropertyField(
+                serializedObject.FindProperty("cardsToDraw2")
             );
         }
 
@@ -67,7 +71,11 @@ public class CardEditor : Editor
         if (cpChange.boolValue)
         {
             EditorGUILayout.PropertyField(
-                serializedObject.FindProperty("CPToGain")
+                serializedObject.FindProperty("CPToGain1")
+            );
+
+            EditorGUILayout.PropertyField(
+                serializedObject.FindProperty("CPToGain2")
             );
         }
 

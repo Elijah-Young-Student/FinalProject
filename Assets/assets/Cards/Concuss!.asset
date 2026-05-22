@@ -13,11 +13,13 @@ MonoBehaviour:
   m_Name: Concuss!
   m_EditorClassIdentifier: 
   cardPrefab: {fileID: 0}
-  cardName: 
+  cardName: Concuss!
   cost: 1
   cardDraws: 0
-  cardsToDraw: 0
+  cardsToDraw1: 0
+  cardsToDraw2: 0
   CPChange: 0
-  CPToGain: 0
+  CPToGain1: 0
+  CPToGain2: 0
   actionType: 1
   cardType: 1

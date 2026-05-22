@@ -13,11 +13,13 @@ MonoBehaviour:
   m_Name: Fortitude II
   m_EditorClassIdentifier: 
   cardPrefab: {fileID: 0}
-  cardName: 
+  cardName: Fortitude II
   cost: 2
   cardDraws: 0
-  cardsToDraw: 0
+  cardsToDraw1: 0
+  cardsToDraw2: 0
   CPChange: 0
-  CPToGain: 0
+  CPToGain1: 0
+  CPToGain2: 0
   actionType: 1
   cardType: 0
