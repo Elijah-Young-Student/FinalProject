@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ShadowThiefDice : MonoBehaviour
+public class ShadowThiefDice : MonoBehaviour, IDice
 {
     // The 6 face normals in local space
     private static readonly Vector3[] faceNormals = new Vector3[]
@@ -13,7 +13,16 @@ public class ShadowThiefDice : MonoBehaviour
         Vector3.left      // Left
     };
 
-    void GetFaceSide()
+    public Rigidbody rb;
+
+    void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
+
+    public Rigidbody GetRigidbody() => rb;
+
+    public string GetFaceSide()
     {
         Vector3 worldUp = Vector3.up;
         float bestDot = float.MinValue;
@@ -38,6 +47,7 @@ public class ShadowThiefDice : MonoBehaviour
             }
         }
 
-        Debug.Log($"Most vertical face: {bestFaceName} (dot: {bestDot:F3})");
+        // Debug.Log($"Most vertical face: {bestFaceName} (dot: {bestDot:F3})");
+        return bestFaceName;
     }
 }
