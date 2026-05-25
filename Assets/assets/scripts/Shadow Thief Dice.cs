@@ -15,12 +15,23 @@ public class ShadowThiefDice : MonoBehaviour, IDice
 
     public Rigidbody rb;
 
+    public Vector3 Origin;
+
+
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
     }
 
+    void Start()
+    {
+        Origin = transform.position;
+    }
+
+
     public Rigidbody GetRigidbody() => rb;
+
+    public Vector3 GetOrigin() => Origin;
 
     public string GetFaceSide()
     {

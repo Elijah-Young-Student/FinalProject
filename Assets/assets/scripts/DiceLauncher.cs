@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DiceLuancher : MonoBehaviour
+public class DiceLauncher : MonoBehaviour
 {
     public float force = 10f;
     public float maxAngleOffset = 15f;
@@ -29,5 +29,11 @@ public class DiceLuancher : MonoBehaviour
             rb.AddForce(finalDirection * force, ForceMode.Impulse);
             rb.AddTorque(Random.insideUnitSphere * (force * 0.5f), ForceMode.Impulse);
         }
+    }
+
+    public void ReturnDiceToOrign(GameObject Die)
+    {
+        // set the position to the origin created when the game starts
+        Die.transform.position = Die.GetComponent<IDice>().GetOrigin();
     }
 }

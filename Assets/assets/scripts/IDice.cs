@@ -2,6 +2,7 @@ using UnityEngine;
 
 public interface IDice
 {
-    string GetFaceSide(); // Changed to return a string so your manager can collect it
+    string GetFaceSide();
     Rigidbody GetRigidbody();
+    Vector3 GetOrigin();
 }

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Callbacks;
 using UnityEngine;
 
 public class CameraAnimationController : MonoBehaviour
@@ -37,7 +38,7 @@ public class CameraAnimationController : MonoBehaviour
 
             if (Input.GetMouseButtonDown(0))
             {
-                // print(item.name);
+                print(item.name);
                 if (!inspect)
                 {
                     switch (item.name)
@@ -126,12 +127,35 @@ public class CameraAnimationController : MonoBehaviour
                             inspect = true;
                             anima.enabled = false;
                             break;
+                        case "Dice Inspect":
+                            targetLoc = new Vector3(-0.0719316751f, 5.60595512f, -0.770729125f);
+                            targetRot = new Vector3(90, 0, 0);
+                            inspect = true;
+                            anima.enabled = false;
+                            break;
                     }
                 }
                 else if (inspect)
                 {
-                    anima.enabled = true;
-                    inspect = false;
+                    switch (item.name)
+                    {
+                        case "Barbarian Dice.002 1":
+                            break;
+                        case "Barbarian Dice.002 2":
+                            break;
+                        case "Barbarian Dice.002 3":
+                            break;
+                        case "Barbarian Dice.002 4":
+                            break;
+                        case "Barbarian Dice.002 5":
+                            break;
+                        // case "Table":
+                        //     break;
+                        default:
+                            anima.enabled = true;
+                            inspect = false;
+                            break;
+                    }
                 }
             }
         }
