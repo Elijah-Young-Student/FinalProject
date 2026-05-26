@@ -9,24 +9,27 @@ public class ControlManager : MonoBehaviour
     private CPDial CPScript;
     public GameObject HealthDial;
     private HealthDial healthScript;
-    public CardManager cardManager;
+    public GameObject CardManager;
+    private CardManager cardManager;
+    public GameObject DiceManager;
+    private DiceManager diceManager;
 
     private int health;
     private int cp;
+
 
     // Start is called before the first frame update
     void Start()
     {
         CPScript = CPDial.GetComponentInChildren<CPDial>();
         healthScript = HealthDial.GetComponent<HealthDial>();
+        cardManager = CardManager.GetComponent<CardManager>();
+        diceManager = DiceManager.GetComponent<DiceManager>();
 
         cp = CPScript.CP;
         health = healthScript.health;
 
-        if (!CPScript)
-            Debug.LogError("There is no CPDial or CPDial script");
-        if (!healthScript)
-            Debug.LogError("There is no CPDial or CPDial script");
+        cardManager.StartGame();
     }
 
     /// <summary>
@@ -40,8 +43,7 @@ public class ControlManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Add the inputted amount to the current CP
-    /// </summary>
+    /// Add the inputted amount to the current CPhx xfvgbnfvgbhn
     /// <param name="cpChange">value to add to the CP</param>
     private void ImpactCP(int cpChange)
     {
@@ -49,20 +51,7 @@ public class ControlManager : MonoBehaviour
         UpdateCP(cp);
     }
 
-    public void StartTurn()
-    {
-        if (UpKeep())
-        {
-            ImpactCP(1);
-        }
-    }
-
-    private bool UpKeep()
-    {
-        // will loop through a list of all the things that need upkeep
-        return true;
-    }
-
+    
     private void UpdateCP(int CP)
     {
         CPScript.SetCP(CP);
@@ -71,5 +60,46 @@ public class ControlManager : MonoBehaviour
     private void UpdateHealth(int Health)
     {
         healthScript.SetHealth(Health);
+    }
+
+    private bool UpKeep()
+    {
+        // will loop through a list of all the things that need upkeep
+        return true;
+    }
+
+    public void IncomePhase()
+    {
+
+    }
+
+    public void MainPhase()
+    {
+
+    }
+    
+    public void RollPhaseOffence()
+    {
+
+    }
+
+    public void RollPhaseTarget()
+    {
+
+    }
+
+    public void RollPhaseDefence()
+    {
+
+    }
+
+    public void DiscardPhase()
+    {
+
+    }
+
+    public void Passive()
+    {
+
     }
 }
