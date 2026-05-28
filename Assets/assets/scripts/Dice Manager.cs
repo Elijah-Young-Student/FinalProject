@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using static ControlManager;
 
 public class DiceManager : MonoBehaviour
 {
@@ -44,6 +45,12 @@ public class DiceManager : MonoBehaviour
 
     void Update()
     {
+
+            if (FindObjectOfType<ControlManager>().currentPhase != GamePhase.RollOffence)
+                return;
+
+            // dice selection / reroll logic here
+  
         if (Input.GetKeyDown(KeyCode.Space))
         {
             RollAndCheckDice(5, (diceResults) =>
@@ -106,6 +113,14 @@ public class DiceManager : MonoBehaviour
             LightChosenDie(diceToRoll);
         }
         
+    }
+
+    public void StartRollPhase()
+    {
+        //RollAllDice((dice) =>
+        //{
+        //    // optional: notify ControlManager later
+        //});
     }
 
     // turn on and off the lights so the player knows what dice they have selected to reroll

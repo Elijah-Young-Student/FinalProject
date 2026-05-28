@@ -17,6 +17,17 @@ public class ControlManager : MonoBehaviour
     private int health;
     private int cp;
 
+    public enum GamePhase
+    {
+        Income,
+        Main,
+        RollOffence,
+        RollTarget,
+        RollDefence,
+        Discard,
+        Passive
+    }
+    public GamePhase currentPhase;
 
     // Start is called before the first frame update
     void Start()
@@ -45,16 +56,24 @@ public class ControlManager : MonoBehaviour
     /// <summary>
     /// Add the inputted amount to the current CPhx xfvgbnfvgbhn
     /// <param name="cpChange">value to add to the CP</param>
-    private void ImpactCP(int cpChange)
+    public void ImpactCP(int cpChange)
     {
         cp += cpChange;
         UpdateCP(cp);
     }
 
+    private void Draw()
+    {
+        cardManager.DrawCard();
+    }
+
     
     private void UpdateCP(int CP)
     {
-        CPScript.SetCP(CP);
+        if (cp < 15 && cp > 0)
+        {
+            CPScript.SetCP(CP);
+        }
     }
 
     private void UpdateHealth(int Health)
@@ -62,7 +81,7 @@ public class ControlManager : MonoBehaviour
         healthScript.SetHealth(Health);
     }
 
-    private bool UpKeep()
+    public bool UpKeep()
     {
         // will loop through a list of all the things that need upkeep
         return true;
@@ -70,17 +89,22 @@ public class ControlManager : MonoBehaviour
 
     public void IncomePhase()
     {
-
+        Draw();
+        ImpactCP(1);
     }
 
     public void MainPhase()
     {
+        currentPhase = GamePhase.Main;
 
+        cardManager.EnableMainPhase(); // ADD THIS CALL
     }
-    
+
     public void RollPhaseOffence()
     {
+        currentPhase = GamePhase.RollOffence;
 
+        diceManager.StartRollPhase(); // ADD THIS CALL
     }
 
     public void RollPhaseTarget()
@@ -95,11 +119,39 @@ public class ControlManager : MonoBehaviour
 
     public void DiscardPhase()
     {
+        currentPhase = GamePhase.Discard;
 
+        cardManager.StartDiscardPhase(); // ADD THIS CALL
     }
 
     public void Passive()
     {
 
+    }
+
+    public void NextPhase()
+    {
+        switch (currentPhase)
+        {
+            case GamePhase.Income:
+                MainPhase();
+                break;
+
+            case GamePhase.Main:
+                RollPhaseOffence();
+                break;
+
+            case GamePhase.RollOffence:
+                DiscardPhase();
+                break;
+
+            case GamePhase.Discard:
+                Passive();
+                break;
+
+            case GamePhase.Passive:
+                IncomePhase();
+                break;
+        }
     }
 }
