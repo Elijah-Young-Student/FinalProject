@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -18,6 +17,8 @@ public class DiceManager : MonoBehaviour
     private DiceLauncher diceLauncher;
 
     public GraphicRaycaster uiRaycaster;
+
+    public GameObject[] DiceLights = new GameObject[5];
 
 
     void Start()
@@ -101,9 +102,19 @@ public class DiceManager : MonoBehaviour
                         diceToRoll.Add(item);
                     }
                 }
-
-
             }
+            LightChosenDie(diceToRoll);
+        }
+        
+    }
+
+    // turn on and off the lights so the player knows what dice they have selected to reroll
+    private void LightChosenDie(List<GameObject> diceToRoll)
+    {
+        for (int i = 0; i < Dice.Length; i++)
+        {
+            if (Dice[i] == null || DiceLights[i] == null) continue;
+            DiceLights[i].SetActive(diceToRoll.Contains(Dice[i]));
         }
     }
 

@@ -133,6 +133,12 @@ public class CameraAnimationController : MonoBehaviour
                             inspect = true;
                             anima.enabled = false;
                             break;
+                        case "Barbarian Turn Order":
+                            targetLoc = new Vector3(1.22651887f, 5.56298161f, -0.741449475f);
+                            targetRot = new Vector3(90, 0, 0);
+                            inspect = true;
+                            anima.enabled = false;
+                            break;
                     }
                 }
                 else if (inspect)
