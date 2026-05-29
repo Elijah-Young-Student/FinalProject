@@ -1,32 +1,17 @@
-//using UnityEngine;
+using UnityEngine;
 
-//[CreateAssetMenu(menuName = "Cards/Effects/Apply Status")]
-//public class ApplyStatusEffect : CardEffect
-//{
-//    public StatusEffect status;
+[CreateAssetMenu(menuName = "Card Effects/Apply Status")]
+public class ApplyStatusEffect : CardEffect
+{
+    public StatusEffect statusToApply;
 
-//    public int amount;
+    public int stacks = 1;
 
-//    public bool forceEnemy;
-
-//    public override IEnumerator Resolve(
-//        CardManager manager,
-//        CardContext context
-//    )
-//    {
-//        PlayerController target;
-
-//        if (forceEnemy)
-//        {
-//            target = manager.enemyPlayer;
-//        }
-//        else
-//        {
-//            target = context.targetPlayer;
-//        }
-
-//        target.ApplyStatus(status, amount);
-
-//        yield break;
-//    }
-//}
+    public override void OnPlay(
+        CharacterState owner,
+        DiceManager diceManager,
+        ControlManager controlManager)
+    {
+        owner.AddStatus(statusToApply, stacks);
+    }
+}

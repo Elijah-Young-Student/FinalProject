@@ -6,30 +6,52 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using static ControlManager;
 
 public class DiceManager : MonoBehaviour
 {
+    [Header("Dice")]
     public GameObject[] Dice = new GameObject[5];
-    private List<GameObject> diceToRoll = new List<GameObject>(1);
-    private Type[] possibleScripts = { typeof(BarbarianDice), typeof(ShadowThiefDice) };
-    private IDice[] scriptsArray;
-    public GameObject DiceLauncher;
-    private DiceLauncher diceLauncher;
-
-    public GraphicRaycaster uiRaycaster;
 
     public GameObject[] DiceLights = new GameObject[5];
 
+    private List<GameObject> diceToRoll = new();
+
+    private Type[] possibleScripts =
+    {
+        typeof(BarbarianDice)
+    };
+
+    private IDice[] scriptsArray;
+
+    [Header("Launcher")]
+    public GameObject DiceLauncher;
+
+    private DiceLauncher diceLauncher;
+
+    [Header("UI")]
+    public GraphicRaycaster uiRaycaster;
+
+    [Header("Managers")]
+    public ControlManager controlManager;
+
+    [Header("Modifiers")]
+    private Queue<string> forcedFaces = new();
+
+    private int bonusRerolls = 0;
+
+    private DiceModificationRequest activeModificationRequest;
 
     void Start()
     {
         diceLauncher = DiceLauncher.GetComponent<DiceLauncher>();
 
-        List<IDice> foundScripts = new List<IDice>();
+        List<IDice> foundScripts = new();
+
         foreach (GameObject die in Dice)
         {
-            if (die == null) continue;
+            if (die == null)
+                continue;
+
             foreach (Type scriptType in possibleScripts)
             {
                 IDice script = die.GetComponent(scriptType) as IDice;
@@ -45,12 +67,8 @@ public class DiceManager : MonoBehaviour
 
     void Update()
     {
-
-            if (FindObjectOfType<ControlManager>().currentPhase != GamePhase.RollOffence)
-                return;
-
-            // dice selection / reroll logic here
-  
+        // if (controlManager.currentPhase != ControlManager.GamePhase.RollOffence)
+        //     return;
         if (Input.GetKeyDown(KeyCode.Space))
         {
             RollAndCheckDice(5, (diceResults) =>
@@ -62,92 +80,111 @@ public class DiceManager : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            // detect UI pressed
             PointerEventData pointerData = new PointerEventData(EventSystem.current);
             pointerData.position = Input.mousePosition;
 
-            List<RaycastResult> uiResults = new List<RaycastResult>();
+            List<RaycastResult> uiResults = new();
             uiRaycaster.Raycast(pointerData, uiResults);
 
             foreach (RaycastResult result in uiResults)
             {
                 TextMeshProUGUI tmpText = result.gameObject.GetComponentInParent<TextMeshProUGUI>();
+
                 if (tmpText)
                 {
-                    // cant reroll nothing
                     if (diceToRoll.Count > 0)
                     {
-                        print("reroll pressed");
-                        // Thread.Sleep(500);
                         RollAndCheckDice(diceToRoll.ToArray(), (diceResults) =>
                         {
                             foreach (var dieOut in diceResults)
                                 print(dieOut);
                         });
-                        // clear the list so the same dice cant be rerolled imidialty on accident
+
                         diceToRoll.Clear();
                     }
+
                     return;
                 }
             }
+
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
             RaycastHit hit;
+
             if (Physics.Raycast(ray, out hit))
             {
                 GameObject item = hit.collider.gameObject;
-                print(item.name);
-                // see if dice is already to be rolled, and if it is it is removed from the roll 'que'
+
                 if (diceToRoll.Contains(item))
                 {
                     diceToRoll.Remove(item);
                 }
                 else
                 {
-                    // if dice is not in the 'que' adds it if it is one of the dice to roll
                     if (Dice.Contains(item))
                     {
                         diceToRoll.Add(item);
                     }
                 }
             }
+
             LightChosenDie(diceToRoll);
         }
-        
+    }
+
+    public void StartDiceModification(int numberOfDice, bool anyFace, string[] allowedFaces = null)
+    {
+        activeModificationRequest = new DiceModificationRequest
+        {
+            awaitingSelection = true,
+            diceToModify = numberOfDice,
+            allowAnyFace = anyFace,
+            allowedFaces = allowedFaces
+        };
+    }
+
+    public void EnableBonusRerolls(int amount)
+    {
+        bonusRerolls += amount;
+    }
+
+    public void ForceNextDice(string face)
+    {
+        forcedFaces.Enqueue(face);
     }
 
     public void StartRollPhase()
     {
-        //RollAllDice((dice) =>
-        //{
-        //    // optional: notify ControlManager later
-        //});
+
     }
 
-    // turn on and off the lights so the player knows what dice they have selected to reroll
     private void LightChosenDie(List<GameObject> diceToRoll)
     {
         for (int i = 0; i < Dice.Length; i++)
         {
-            if (Dice[i] == null || DiceLights[i] == null) continue;
+            if (Dice[i] == null || DiceLights[i] == null)
+                continue;
+
             DiceLights[i].SetActive(diceToRoll.Contains(Dice[i]));
         }
     }
 
-    // Pass an Action callback so the calling script receives the list when done
     public void RollAndCheckDice(int numberOfDice, Action<List<string>> onResultsReady)
     {
+        print(numberOfDice);
         StartCoroutine(WaitAndGetResults(numberOfDice, onResultsReady));
     }
 
     public void RollAndCheckDice(GameObject[] dice, Action<List<string>> onResultsReady)
     {
+        print("check");
         StartCoroutine(WaitAndGetResults(dice, onResultsReady));
     }
 
     private IEnumerator WaitAndGetResults(int numberOfDice, Action<List<string>> callback)
     {
-
         int loops = Mathf.Min(numberOfDice, scriptsArray.Length);
+
         for (int i = 0; i < loops; i++)
         {
             diceLauncher.Launch(Dice[i]);
@@ -164,9 +201,9 @@ public class DiceManager : MonoBehaviour
             for (int i = 0; i < loops; i++)
             {
                 Rigidbody rb = scriptsArray[i].GetRigidbody();
+
                 if (rb != null)
                 {
-                    // Using .velocity for backwards compatibility
                     if (!rb.IsSleeping() && rb.velocity.sqrMagnitude > 0.001f)
                     {
                         allDiceStopped = false;
@@ -174,40 +211,40 @@ public class DiceManager : MonoBehaviour
                     }
                 }
             }
+
             yield return null;
         }
 
-        // Gather the results now that everything is resting
         List<string> finalResults = GetDiceResults(numberOfDice);
 
-        //set the dice back to there origin after delay
         yield return new WaitForSeconds(2.5f);
+
         foreach (GameObject die in Dice)
         {
             diceLauncher.ReturnDiceToOrign(die);
         }
 
-        // Trigger the callback and hand over the list to whoever called this method
         callback?.Invoke(finalResults);
     }
 
     private IEnumerator WaitAndGetResults(GameObject[] dice, Action<List<string>> callback)
     {
-        List<int> j = new List<int>();
+        List<int> indexes = new();
+
         foreach (GameObject die in dice)
         {
             foreach (GameObject d in Dice)
             {
                 if (die == d)
                 {
-                    // get the index of the item in the original array
                     int i = Array.IndexOf(Dice, d);
+
                     diceLauncher.Launch(Dice[i]);
-                    j.Add(i);
+
+                    indexes.Add(i);
                 }
             }
         }
-
 
         yield return new WaitForSeconds(1f);
 
@@ -216,12 +253,13 @@ public class DiceManager : MonoBehaviour
         while (!allDiceStopped)
         {
             allDiceStopped = true;
-            for (int i = 0; i < j.Count; i++)
+
+            for (int i = 0; i < indexes.Count; i++)
             {
-                Rigidbody rb = scriptsArray[j[i]].GetRigidbody();
+                Rigidbody rb = scriptsArray[indexes[i]].GetRigidbody();
+
                 if (rb != null)
                 {
-                    // Using .velocity for backwards compatibility
                     if (!rb.IsSleeping() && rb.velocity.sqrMagnitude > 0.001f)
                     {
                         allDiceStopped = false;
@@ -229,42 +267,70 @@ public class DiceManager : MonoBehaviour
                     }
                 }
             }
+
             yield return null;
         }
 
-        // Gather the results now that everything is resting
-        List<string> finalResults = GetDiceResults(j.ToArray());
+        List<string> finalResults = GetDiceResults(indexes.ToArray());
 
-        //set the dice back to there origin after delay
         yield return new WaitForSeconds(2.5f);
+
         foreach (GameObject die in dice)
         {
             diceLauncher.ReturnDiceToOrign(die);
         }
 
-        // Trigger the callback and hand over the list to whoever called this method
         callback?.Invoke(finalResults);
     }
 
     private List<string> GetDiceResults(int numberOfDice)
     {
-        List<string> result = new List<string>();
+        List<string> result = new();
+
         if (numberOfDice > 0)
         {
             int loops = Mathf.Min(numberOfDice, scriptsArray.Length);
+
             for (int i = 0; i < loops; i++)
             {
-                result.Add(scriptsArray[i].GetFaceSide());
+                string face;
+
+                if (forcedFaces.Count > 0)
+                {
+                    face = forcedFaces.Dequeue();
+                }
+                else
+                {
+                    face = scriptsArray[i].GetFaceSide();
+                }
+
+                result.Add(face);
             }
         }
+
         return result;
     }
 
     private List<string> GetDiceResults(int[] dieScriptIndex)
     {
-        List<string> result = new List<string>();
+        List<string> result = new();
+
         foreach (int i in dieScriptIndex)
-            result.Add(scriptsArray[i].GetFaceSide());
+        {
+            string face;
+
+            if (forcedFaces.Count > 0)
+            {
+                face = forcedFaces.Dequeue();
+            }
+            else
+            {
+                face = scriptsArray[i].GetFaceSide();
+            }
+
+            result.Add(face);
+        }
+
         return result;
     }
 }

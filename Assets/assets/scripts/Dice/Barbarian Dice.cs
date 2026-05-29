@@ -17,6 +17,13 @@ public class BarbarianDice : MonoBehaviour, IDice
 
     public Vector3 Origin;
 
+    private string forcedFace = "";
+
+    public void ForceFace(string face)
+    {
+        forcedFace = face;
+    }
+
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -32,6 +39,15 @@ public class BarbarianDice : MonoBehaviour, IDice
 
     public string GetFaceSide()
     {
+        // force face of die
+        if (!string.IsNullOrEmpty(forcedFace))
+        {
+            string result = forcedFace;
+            forcedFace = "";
+            return result;
+        }
+
+        // find the new face after roll
         Vector3 worldUp = Vector3.up;
         float bestDot = float.MinValue;
         Vector3 bestFaceNormal = Vector3.zero;

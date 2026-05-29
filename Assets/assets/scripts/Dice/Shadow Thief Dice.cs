@@ -17,6 +17,13 @@ public class ShadowThiefDice : MonoBehaviour, IDice
 
     public Vector3 Origin;
 
+    private string forcedFace = "";
+
+    public void ForceFace(string face)
+    {
+        forcedFace = face;
+    }
+
 
     void Awake()
     {

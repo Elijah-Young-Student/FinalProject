@@ -4032,42 +4032,46 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardDeck:
-  - {fileID: 11400000, guid: 0f772e87a15fada4ab48d629195d45af, type: 2}
-  - {fileID: 11400000, guid: c46bd5d8152bfea49aa74d07dcdd6d8b, type: 2}
-  - {fileID: 11400000, guid: 07e9bb0a04c4fbc48b374a228d53c8fe, type: 2}
-  - {fileID: 11400000, guid: 2f6ce0ba1debd5240a0bc14a8d2a7059, type: 2}
-  - {fileID: 11400000, guid: 3d5dc222c2b7dfa43ac7a6b7b0efcf3b, type: 2}
-  - {fileID: 11400000, guid: 9371e6f5375f8614aabf0d2da3bbca50, type: 2}
-  - {fileID: 11400000, guid: 9258f5f894baab541889a22db77e09f8, type: 2}
-  - {fileID: 11400000, guid: 6dbce963e17600d4d8c93c75cb32fba3, type: 2}
-  - {fileID: 11400000, guid: 974f3f060a6b35144baa8d587f2aed94, type: 2}
-  - {fileID: 11400000, guid: fe4db701d2f43dc4d8d4827c7f24fe27, type: 2}
-  - {fileID: 11400000, guid: 9c295c694a8cd8147bc5c42d221e66fb, type: 2}
-  - {fileID: 11400000, guid: 69bfe550b6e88b847822dfaac0e7f422, type: 2}
-  - {fileID: 11400000, guid: 760ce1c690dd47a4184bb486edadc172, type: 2}
-  - {fileID: 11400000, guid: 1af3902907aaae14abd95d8c261c721e, type: 2}
-  - {fileID: 11400000, guid: 24ea1fb05f464a045ad69617cebf0f7e, type: 2}
-  - {fileID: 11400000, guid: 23dc9868aeffaa84cacf27f853219193, type: 2}
-  - {fileID: 11400000, guid: ecf21158f47c8154fa251007e3d69e4e, type: 2}
-  - {fileID: 11400000, guid: 8d5f0cbb9d992a6489ced0041a5eb620, type: 2}
-  - {fileID: 11400000, guid: 4a3c2a5bd218b0c439ed465281cdb8c4, type: 2}
-  - {fileID: 11400000, guid: 32d87f8df337e9d499d356415c6e8270, type: 2}
-  - {fileID: 11400000, guid: be0bfe22160945444a49adcfe9792e82, type: 2}
-  - {fileID: 11400000, guid: 05caccaccb223604486d9a69fe4c76ce, type: 2}
-  - {fileID: 11400000, guid: b949d4c9be33d04448221c5cd47831bf, type: 2}
-  - {fileID: 11400000, guid: d36364ed717772044b433a6c2bad718d, type: 2}
-  - {fileID: 11400000, guid: 735859dd555487b4b89751f0ac73caff, type: 2}
-  - {fileID: 11400000, guid: fe0b93b09a2834f4abdaabe30d4bc26d, type: 2}
-  - {fileID: 11400000, guid: 322d33d5e29ce7749a63a91110f0e261, type: 2}
-  - {fileID: 11400000, guid: 97e94f19916ba974ba622275e7584d5d, type: 2}
-  - {fileID: 11400000, guid: db3633934b3203e4cafd3186a74f8583, type: 2}
-  - {fileID: 11400000, guid: 01066b4415182c84aa04a79c7f2330df, type: 2}
-  - {fileID: 11400000, guid: 291a43221f67b5a48ad943502d1a7292, type: 2}
-  - {fileID: 11400000, guid: 965ec28a52582724384cccc2069f3afa, type: 2}
-  - {fileID: 11400000, guid: 42e95b8841e813f41b5a06dcb1537b10, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   discardPile: []
+  PlayerHand: []
+  controlManager: {fileID: 1777146683}
+  diceManager: {fileID: 1289373351}
   handArea: {fileID: 1259825905}
   actionPanel: {fileID: 1155221046}
+  discardBanner: {fileID: 0}
 --- !u!1 &742502517
 GameObject:
   m_ObjectHideFlags: 0
@@ -6627,14 +6631,15 @@ MonoBehaviour:
   - {fileID: 1795230550}
   - {fileID: 222854745}
   - {fileID: 1543608657}
-  DiceLauncher: {fileID: 631304935}
-  uiRaycaster: {fileID: 848098037}
   DiceLights:
   - {fileID: 285526515}
   - {fileID: 2095040915}
   - {fileID: 398450125}
   - {fileID: 1374718018}
   - {fileID: 209467730}
+  DiceLauncher: {fileID: 631304935}
+  uiRaycaster: {fileID: 848098037}
+  controlManager: {fileID: 1777146683}
 --- !u!4 &1294348346 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 1559153f497da274e8d2d70f0762bf4e, type: 3}
@@ -9348,6 +9353,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1777146682}
   - component: {fileID: 1777146683}
+  - component: {fileID: 1777146684}
   m_Layer: 0
   m_Name: Barbarian
   m_TagString: Untagged
@@ -9396,9 +9402,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CPDial: {fileID: 565598459}
+  CPScript: {fileID: 0}
   HealthDial: {fileID: 919132149409445238}
-  CardManager: {fileID: 740222397}
-  DiceManager: {fileID: 1289373349}
+  healthScript: {fileID: 0}
+  cardManager: {fileID: 740222399}
+  diceManager: {fileID: 1289373351}
+  playerState: {fileID: 1777146684}
+  currentPhase: 0
+--- !u!114 &1777146684
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1777146681}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 681f5c9832207264a97f1bf3657c431f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 50
+  cp: 2
+  activeEffects: []
+  outgoingDamageBonus: 0
+  incomingDamageReduction: 0
+  statuses: []
 --- !u!1 &1795230550 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 1559153f497da274e8d2d70f0762bf4e, type: 3}

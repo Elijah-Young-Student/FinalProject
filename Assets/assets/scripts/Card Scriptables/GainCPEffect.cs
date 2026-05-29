@@ -1,14 +1,15 @@
-//using UnityEngine;
+using UnityEngine;
 
-//[CreateAssetMenu(menuName = "Cards/Effects/Gain CP")]
-//public class GainCPEffect : CardEffect
-//{
-//    public int amount;
+[CreateAssetMenu(menuName = "Card Effects/Gain CP")]
+public class GainCPEffect : CardEffect
+{
+    public int amount;
 
-//    public override void Activate(CardManager manager)
-//    {
-//        Debug.Log("Gain " + amount + " CP");
-
-//        //manager.ImpactCP();
-//    }
-//}
+    public override void OnPlay(
+        CharacterState owner,
+        DiceManager diceManager,
+        ControlManager controlManager)
+    {
+        owner.GainCP(amount);
+    }
+}

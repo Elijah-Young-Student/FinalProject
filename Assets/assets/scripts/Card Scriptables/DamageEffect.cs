@@ -1,14 +1,17 @@
-//using UnityEngine;
+using UnityEngine;
 
-//[CreateAssetMenu(menuName = "Cards/Effects/Damage")]
-//public class DamageEffect : CardEffect
-//{
-//    public int damage;
+[CreateAssetMenu(menuName = "Card Effects/Damage")]
+public class DamageEffect : CardEffect
+{
+    public int bonusDamage;
 
-//    public override void Activate(CardManager manager)
-//    {
-//        Debug.Log("Deal " + damage + " damage");
+    public override void OnApply(CharacterState owner)
+    {
+        owner.outgoingDamageBonus += bonusDamage;
+    }
 
-//        // target.TakeDamage(damage);
-//    }
-//}
+    public override void OnRemove(CharacterState owner)
+    {
+        owner.outgoingDamageBonus -= bonusDamage;
+    }
+}

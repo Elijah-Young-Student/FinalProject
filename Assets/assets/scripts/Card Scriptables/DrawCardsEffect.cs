@@ -1,15 +1,18 @@
-//using UnityEngine;
+using UnityEngine;
 
-//[CreateAssetMenu(menuName = "Cards/Effects/Draw Cards")]
-//public class DrawCardsEffect : CardEffect
-//{
-//    public int amount;
+[CreateAssetMenu(menuName = "Card Effects/Draw Cards")]
+public class DrawCardsEffect : CardEffect
+{
+    public int cardsToDraw = 1;
 
-//    public override void Activate(CardManager manager)
-//    {
-//        for (int i = 0; i < amount; i++)
-//        {
-//            manager.DrawCard();
-//        }
-//    }
-//}
+    public override void OnPlay(
+        CharacterState owner,
+        DiceManager diceManager,
+        ControlManager controlManager)
+    {
+        for (int i = 0; i < cardsToDraw; i++)
+        {
+            controlManager.cardManager.DrawCard();
+        }
+    }
+}

@@ -1,21 +1,19 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ControlManager : MonoBehaviour
 {
-
+    [Header("References")]
     public GameObject CPDial;
-    private CPDial CPScript;
-    public GameObject HealthDial;
-    private HealthDial healthScript;
-    public GameObject CardManager;
-    private CardManager cardManager;
-    public GameObject DiceManager;
-    private DiceManager diceManager;
+    public CPDial CPScript;
 
-    private int health;
-    private int cp;
+    public GameObject HealthDial;
+    public HealthDial healthScript;
+
+    public CardManager cardManager;
+
+    public DiceManager diceManager;
+
+    public CharacterState playerState;
 
     public enum GamePhase
     {
@@ -27,39 +25,56 @@ public class ControlManager : MonoBehaviour
         Discard,
         Passive
     }
+
     public GamePhase currentPhase;
 
-    // Start is called before the first frame update
     void Start()
     {
         CPScript = CPDial.GetComponentInChildren<CPDial>();
         healthScript = HealthDial.GetComponent<HealthDial>();
-        cardManager = CardManager.GetComponent<CardManager>();
-        diceManager = DiceManager.GetComponent<DiceManager>();
 
-        cp = CPScript.CP;
-        health = healthScript.health;
+        CPScript.SetCP(playerState.cp);
+        healthScript.SetHealth(playerState.health);
+
+        UpdateUI();
 
         cardManager.StartGame();
+
+        currentPhase = GamePhase.Income;
     }
 
-    /// <summary>
-    /// subtract the inputted amount from current health
-    /// </summary>
-    /// <param name="dmg">the amount of damage to take from the player</param>
-    public void Damage(int dmg)
+    public void Damage(
+    int dmg,
+    DamageType type,
+    bool offensiveRollDamage = false)
+{
+    DamagePacket packet = new DamagePacket
     {
-        health -= dmg;
-        UpdateHealth(health);
-    }
+        amount = dmg,
+        damageType = type,
+        source = null,
+        target = playerState,
+        offensiveRollDamage = offensiveRollDamage
+    };
 
-    /// <summary>
-    /// Add the inputted amount to the current CPhx xfvgbnfvgbhn
-    /// <param name="cpChange">value to add to the CP</param>
+    playerState.TakeDamage(packet);
+
+    UpdateUI();
+}
+
     public void ImpactCP(int cpChange)
     {
-        cp += cpChange;
-        UpdateCP(cp);
+        playerState.GainCP(cpChange);
+        UpdateUI();
+    }
+
+    public bool SpendCP(int amount)
+    {
+        bool success = playerState.SpendCP(amount);
+
+        UpdateUI();
+
+        return success;
     }
 
     private void Draw()
@@ -67,29 +82,32 @@ public class ControlManager : MonoBehaviour
         cardManager.DrawCard();
     }
 
-    
-    private void UpdateCP(int CP)
+    private void UpdateUI()
     {
-        if (cp < 15 && cp > 0)
-        {
-            CPScript.SetCP(CP);
-        }
-    }
-
-    private void UpdateHealth(int Health)
-    {
-        healthScript.SetHealth(Health);
-    }
-
-    public bool UpKeep()
-    {
-        // will loop through a list of all the things that need upkeep
-        return true;
+        CPScript.SetCP(playerState.cp);
+        healthScript.SetHealth(playerState.health);
     }
 
     public void IncomePhase()
     {
+        currentPhase = GamePhase.Income;
+
+        foreach (StatusInstance status in playerState.statuses)
+        {
+            if (status.effect is ConcussionEffect)
+            {
+                Debug.Log("Income phase skipped due to Concussion.");
+
+                playerState.RemoveStatus(status.effect);
+
+                MainPhase();
+
+                return;
+            }
+        }
+
         Draw();
+
         ImpactCP(1);
     }
 
@@ -97,36 +115,43 @@ public class ControlManager : MonoBehaviour
     {
         currentPhase = GamePhase.Main;
 
-        cardManager.EnableMainPhase(); // ADD THIS CALL
+        // cardManager.EnableMainPhase();
     }
 
     public void RollPhaseOffence()
     {
         currentPhase = GamePhase.RollOffence;
 
-        diceManager.StartRollPhase(); // ADD THIS CALL
+
+        diceManager.StartRollPhase();
     }
 
     public void RollPhaseTarget()
     {
-
+        currentPhase = GamePhase.RollTarget;
     }
 
     public void RollPhaseDefence()
     {
+        currentPhase = GamePhase.RollDefence;
 
+        if (playerState.HasActionBlockingStatus())
+        {
+            Debug.Log("Player is stunned.");
+            return;
+        }
     }
 
     public void DiscardPhase()
     {
         currentPhase = GamePhase.Discard;
 
-        cardManager.StartDiscardPhase(); // ADD THIS CALL
+        cardManager.StartDiscardPhase();
     }
 
     public void Passive()
     {
-
+        currentPhase = GamePhase.Passive;
     }
 
     public void NextPhase()

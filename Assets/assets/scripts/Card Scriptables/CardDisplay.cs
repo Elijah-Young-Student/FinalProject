@@ -6,9 +6,9 @@ public class CardDisplay : MonoBehaviour
     private Card cardData;
     private CardManager handUI;
 
-    public void Setup(Card card, CardManager ui)
+    public void Setup(GameObject card, CardManager ui)
     {
-        cardData = card;
+        cardData = card.GetComponent<Card>();
         handUI = ui;
 
         Button button = GetComponent<Button>();
@@ -21,6 +21,6 @@ public class CardDisplay : MonoBehaviour
 
     void OnClicked()
     {
-        handUI.SelectCard(gameObject, cardData);
+        handUI.SelectCard(gameObject);
     }
 }
