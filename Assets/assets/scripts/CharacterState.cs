@@ -4,11 +4,11 @@ using UnityEngine;
 public class CharacterState : MonoBehaviour
 {
     [Header("Stats")]
+    public int maxHealth = 99;
     public int health = 50;
-    public int cp = 2;
 
-    [Header("Runtime Effects")]
-    public List<CardEffect> activeEffects = new();
+    public int maxCp = 15;
+    public int cp = 2;
 
     [Header("Combat Modifiers")]
     public int outgoingDamageBonus = 0;
@@ -17,9 +17,18 @@ public class CharacterState : MonoBehaviour
     [Header("Statuses")]
     public List<StatusInstance> statuses = new();
 
+    private Dictionary<StatusEffect, GameObject> statusTokens = new();
+
+    [Header("Board Reference")]
+    public GameObject statusAnchor;
+
+    public CardManager cardManager;
+
+    #region CP
+
     public void GainCP(int amount)
     {
-        cp += amount;
+        cp = Mathf.Clamp(cp + amount, 0, maxCp);
     }
 
     public bool SpendCP(int amount)
@@ -31,142 +40,76 @@ public class CharacterState : MonoBehaviour
         return true;
     }
 
+    #endregion
+
+    #region HEALTH
+
+    public void Heal(int amount)
+    {
+        health = Mathf.Clamp(health + amount, 0, maxHealth);
+    }
+
     public void TakeDamage(DamagePacket packet)
     {
-        // STATUS MODIFIERS
-
-        foreach (StatusInstance status in statuses)
+        // STATUS PREVENTION
+        foreach (var status in statuses)
         {
-            if (
-                packet.offensiveRollDamage &&
-                status.effect.PreventsOffensiveRollDamage()
-            )
+            if (packet.offensiveRollDamage &&
+                status.effect.PreventsOffensiveRollDamage())
             {
-                Debug.Log("Damage prevented.");
-
+                Debug.Log("Damage prevented by status.");
                 return;
             }
         }
 
-        foreach (StatusInstance status in statuses)
+        // MODIFY INCOMING DAMAGE
+        foreach (var status in statuses)
         {
-            packet.amount =
-                status.effect.ModifyIncomingDamage(
-                    this,
-                    packet.amount);
+            packet.amount = status.effect.ModifyIncomingDamage(this, packet.amount);
         }
 
-        // PURE DAMAGE IGNORES REDUCTION
-
+        // ARMOR / REDUCTION
         if (packet.damageType != DamageType.Pure)
-        {
             packet.amount -= incomingDamageReduction;
-        }
 
-        if (packet.amount < 0)
-            packet.amount = 0;
+        packet.amount = Mathf.Max(0, packet.amount);
 
         health -= packet.amount;
 
-        Debug.Log(
-            name +
-            " took " +
-            packet.amount +
-            " " +
-            packet.damageType +
-            " damage.");
+        Debug.Log($"{name} took {packet.amount} damage.");
     }
 
     public int ModifyOutgoingDamage(int baseDamage)
     {
         int damage = baseDamage + outgoingDamageBonus;
 
-        foreach (StatusInstance status in statuses)
+        for (int i = statuses.Count - 1; i >= 0; i--)
         {
-            damage = status.effect.ModifyOutgoingDamage(
-                this,
-                damage);
+            damage = statuses[i].effect.ModifyOutgoingDamage(this, damage);
+
+            if (statuses[i].effect.ConsumeOnUse)
+            {
+                statuses[i].stacks--;
+
+                if (statuses[i].stacks <= 0)
+                    RemoveStatus(statuses[i].effect);
+            }
         }
 
         return damage;
     }
 
-    public void AddEffect(CardEffect effect)
-    {
-        activeEffects.Add(effect);
-        effect.OnApply(this);
-    }
+    #endregion
 
-    public void RemoveEffect(CardEffect effect)
-    {
-        effect.OnRemove(this);
-        activeEffects.Remove(effect);
-    }
-
-    public void RemoveStatus(StatusEffect effect)
-    {
-        for (int i = statuses.Count - 1; i >= 0; i--)
-        {
-            if (statuses[i].effect == effect)
-            {
-                effect.OnRemove(this);
-
-                statuses.RemoveAt(i);
-            }
-        }
-    }
-
-    public void RemoveStatusByName(string statusName)
-    {
-        for (int i = statuses.Count - 1; i >= 0; i--)
-        {
-            if (statuses[i].effect.statusName == statusName)
-            {
-                statuses[i].effect.OnRemove(this);
-
-                statuses.RemoveAt(i);
-            }
-        }
-    }
-
-    public bool HasStatus(string statusName)
-    {
-        foreach (StatusInstance status in statuses)
-        {
-            if (status.effect.statusName == statusName)
-                return true;
-        }
-
-        return false;
-    }
-
-    public int GetStatusStacks(string statusName)
-    {
-        foreach (StatusInstance status in statuses)
-        {
-            if (status.effect.statusName == statusName)
-                return status.stacks;
-        }
-
-        return 0;
-    }
+    #region STATUS SYSTEM
 
     public void AddStatus(StatusEffect effect, int stacks = 1)
     {
-        foreach (StatusInstance status in statuses)
+        for (int i = 0; i < statuses.Count; i++)
         {
-            if (status.effect == effect)
+            if (statuses[i].effect == effect)
             {
-                status.stacks += stacks;
-
-                status.stacks = Mathf.Min(
-                    status.stacks,
-                    effect.maxStacks);
-
-                status.duration = Mathf.Max(
-                    status.duration,
-                    effect.defaultDuration);
-
+                statuses[i].stacks += stacks;
                 return;
             }
         }
@@ -180,17 +123,97 @@ public class CharacterState : MonoBehaviour
 
         statuses.Add(newStatus);
 
-        effect.OnApply(this);
+        SpawnStatusToken(newStatus);
+    }
+
+    public void RemoveStatus(StatusEffect effect)
+    {
+        for (int i = statuses.Count - 1; i >= 0; i--)
+        {
+            if (statuses[i].effect == effect)
+            {
+                effect.OnRemove(this);
+                statuses.RemoveAt(i);
+            }
+        }
+    }
+
+    public void RemoveStatusByName(string statusName)
+    {
+        for (int i = statuses.Count - 1; i >= 0; i--)
+        {
+            if (statuses[i].effect.statusName == statusName)
+            {
+                statuses[i].effect.OnRemove(this);
+                statuses.RemoveAt(i);
+            }
+        }
+    }
+
+    public bool HasStatus(string statusName)
+    {
+        foreach (var status in statuses)
+            if (status.effect.statusName == statusName)
+                return true;
+
+        return false;
+    }
+
+    public int GetStatusStacks(string statusName)
+    {
+        foreach (var status in statuses)
+            if (status.effect.statusName == statusName)
+                return status.stacks;
+
+        return 0;
     }
 
     public bool HasActionBlockingStatus()
     {
-        foreach (StatusInstance status in statuses)
-        {
+        foreach (var status in statuses)
             if (status.effect.PreventsActions())
                 return true;
-        }
 
         return false;
     }
+
+    #endregion
+
+    #region VISUALS
+
+    private void SpawnStatusToken(StatusInstance status)
+    {
+        if (status.effect.tokenPrefab == null)
+            return;
+
+        GameObject token = Instantiate(
+            status.effect.tokenPrefab,
+            statusAnchor.transform.position,
+            Quaternion.identity,
+            statusAnchor.transform
+        );
+
+        status.tokenObject = token;
+
+        StatusToken statusToken = token.GetComponent<StatusToken>();
+        if (statusToken != null)
+            statusToken.effect = status.effect;
+
+        Vector3 offset = new Vector3(
+            Random.Range(-5f, 5f),
+            0f,
+            Random.Range(-5f, 5f)
+        );
+
+        Vector3 target = statusAnchor.transform.position + offset;
+
+        if (StatusEffectManager.Instance != null)
+        {
+            StatusEffectManager.Instance.StartCoroutine(
+                StatusEffectManager.Instance.MoveToken(token, target, 50f)
+            );
+        }
+    }
+
+    #endregion
 }

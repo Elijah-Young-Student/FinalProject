@@ -1,3 +1,6 @@
+using System;
+using System.Collections;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class BarbarianDice : MonoBehaviour, IDice
@@ -18,6 +21,8 @@ public class BarbarianDice : MonoBehaviour, IDice
     public Vector3 Origin;
 
     private string forcedFace = "";
+
+    private string[] faceNames = { "6✷", "1s", "2s", "5❤", "4❤", "3s" };
 
     public void ForceFace(string face)
     {
@@ -53,7 +58,7 @@ public class BarbarianDice : MonoBehaviour, IDice
         Vector3 bestFaceNormal = Vector3.zero;
         string bestFaceName = "";
 
-        string[] faceNames = { "6✷", "1s", "2s", "5❤", "4❤", "3s" };
+
 
         for (int i = 0; i < faceNormals.Length; i++)
         {
@@ -73,5 +78,27 @@ public class BarbarianDice : MonoBehaviour, IDice
 
         // Debug.Log($"Most vertical face: {bestFaceName} (dot: {bestDot:F3})");
         return bestFaceName;
+    }
+
+    public IEnumerator AlignToFace(string face, float speed = 100f)
+    {
+        Vector3 localNormal = faceNormals[Array.IndexOf(faceNames, face)];
+        Vector3 worldNormal = transform.TransformDirection(localNormal);
+
+        Quaternion targetRot =
+            Quaternion.FromToRotation(transform.up, worldNormal) * transform.rotation;
+
+        while (Quaternion.Angle(transform.rotation, targetRot) > 0.01f)
+        {
+            transform.rotation = Quaternion.RotateTowards(
+                transform.rotation,
+                targetRot,
+                speed * Time.deltaTime
+            );
+
+            yield return null;
+        }
+
+        transform.rotation = targetRot;
     }
 }

@@ -1,19 +1,41 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using TMPro;
+using Unity.Burst.CompilerServices;
+using Unity.VisualScripting.Dependencies.Sqlite;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class ControlManager : MonoBehaviour
 {
-    [Header("References")]
+    [Header("UI References")]
     public GameObject CPDial;
-    public CPDial CPScript;
-
     public GameObject HealthDial;
-    public HealthDial healthScript;
 
+    [Header("Managers")]
+    public CardExecutor cardExecutor;
+    public DiceManager diceManager;
     public CardManager cardManager;
 
-    public DiceManager diceManager;
-
+    [Header("Players")]
     public CharacterState playerState;
+    public CharacterState opponentState;
+
+    [Header("UI")]
+    public GameObject playerSelectionPanel;
+
+    public GraphicRaycaster uiRaycaster;
+    public EventSystem eventSystem;
+
+    [Header("State")]
+    public GamePhase currentPhase = GamePhase.Income;
+
+    public CharacterState activePlayer;
+    public CharacterState inactivePlayer;
+
+    public CharacterState selectedTarget;
 
     public enum GamePhase
     {
@@ -26,157 +48,279 @@ public class ControlManager : MonoBehaviour
         Passive
     }
 
-    public GamePhase currentPhase;
-
     void Start()
     {
-        CPScript = CPDial.GetComponentInChildren<CPDial>();
-        healthScript = HealthDial.GetComponent<HealthDial>();
+        activePlayer = playerState;
+        inactivePlayer = opponentState;
 
-        CPScript.SetCP(playerState.cp);
-        healthScript.SetHealth(playerState.health);
-
-        UpdateUI();
-
-        cardManager.StartGame();
-
-        currentPhase = GamePhase.Income;
+        StartCoroutine(GameLoop());
     }
 
-    public void Damage(
-    int dmg,
-    DamageType type,
-    bool offensiveRollDamage = false)
-{
-    DamagePacket packet = new DamagePacket
+    void Update()
     {
-        amount = dmg,
-        damageType = type,
-        source = null,
-        target = playerState,
-        offensiveRollDamage = offensiveRollDamage
-    };
-
-    playerState.TakeDamage(packet);
-
-    UpdateUI();
-}
-
-    public void ImpactCP(int cpChange)
-    {
-        playerState.GainCP(cpChange);
-        UpdateUI();
-    }
-
-    public bool SpendCP(int amount)
-    {
-        bool success = playerState.SpendCP(amount);
-
-        UpdateUI();
-
-        return success;
-    }
-
-    private void Draw()
-    {
-        cardManager.DrawCard();
-    }
-
-    private void UpdateUI()
-    {
-        CPScript.SetCP(playerState.cp);
-        healthScript.SetHealth(playerState.health);
-    }
-
-    public void IncomePhase()
-    {
-        currentPhase = GamePhase.Income;
-
-        foreach (StatusInstance status in playerState.statuses)
+        if (Input.GetMouseButtonDown(0))
         {
-            if (status.effect is ConcussionEffect)
+            TrySelectCard();
+        }
+    }
+
+    private void TrySelectCard()
+    {
+        PointerEventData pointer = new PointerEventData(eventSystem);
+        pointer.position = Input.mousePosition;
+
+        List<RaycastResult> results = new List<RaycastResult>();
+        uiRaycaster.Raycast(pointer, results);
+
+        foreach (var result in results)
+        {
+            CardView view = result.gameObject.GetComponentInParent<CardView>();
+
+            if (view != null)
             {
-                Debug.Log("Income phase skipped due to Concussion.");
-
-                playerState.RemoveStatus(status.effect);
-
-                MainPhase();
-
+                cardManager.SelectCard(view);
                 return;
             }
         }
-
-        Draw();
-
-        ImpactCP(1);
     }
 
-    public void MainPhase()
+    // =========================================================
+    // MAIN GAME LOOP
+    // =========================================================
+
+    private IEnumerator GameLoop()
+    {
+        while (true)
+        {
+            yield return IncomePhase();
+            yield return MainPhase();
+            yield return RollOffencePhase();
+            yield return RollTargetPhase();
+            yield return RollDefencePhase();
+            yield return DiscardPhase();
+
+            SwapPlayers();
+        }
+    }
+
+    private void SwapPlayers()
+    {
+        (activePlayer, inactivePlayer) = (inactivePlayer, activePlayer);
+    }
+
+    // =========================================================
+    // PHASE SKIP HELPERS
+    // =========================================================
+
+    private bool SkipIncome(CharacterState player)
+    {
+        foreach (var s in player.statuses)
+            if (s.effect.SkipIncomePhase())
+                return true;
+
+        return false;
+    }
+
+    private bool SkipRoll(CharacterState player)
+    {
+        foreach (var s in player.statuses)
+            if (s.effect.PreventsActions())
+                return true;
+
+        return false;
+    }
+
+    // =========================================================
+    // PHASES
+    // =========================================================
+
+    private IEnumerator IncomePhase()
+    {
+        currentPhase = GamePhase.Income;
+
+        if (!SkipIncome(activePlayer))
+        {
+            activePlayer.GainCP(1);
+
+            foreach (var status in activePlayer.statuses)
+                status.effect.OnTick(activePlayer);
+        }
+        else
+        {
+            Debug.Log("Income phase skipped.");
+        }
+
+        yield return null;
+    }
+
+    private IEnumerator MainPhase()
     {
         currentPhase = GamePhase.Main;
 
-        // cardManager.EnableMainPhase();
+        while (currentPhase == GamePhase.Main)
+            yield return null;
     }
 
-    public void RollPhaseOffence()
+    private IEnumerator RollOffencePhase()
     {
         currentPhase = GamePhase.RollOffence;
 
+        if (!SkipRoll(activePlayer))
+        {
+            diceManager.StartFullRoll();
 
-        diceManager.StartRollPhase();
+            while (diceManager.IsRolling)
+                yield return null;
+        }
+        else
+        {
+            Debug.Log("Offence roll skipped.");
+        }
     }
 
-    public void RollPhaseTarget()
+    private IEnumerator RollTargetPhase()
     {
         currentPhase = GamePhase.RollTarget;
+
+        if (!SkipRoll(inactivePlayer))
+        {
+            diceManager.StartFullRoll();
+
+            while (diceManager.IsRolling)
+                yield return null;
+        }
+        else
+        {
+            Debug.Log("Target roll skipped.");
+        }
     }
 
-    public void RollPhaseDefence()
+    private IEnumerator RollDefencePhase()
     {
         currentPhase = GamePhase.RollDefence;
 
-        if (playerState.HasActionBlockingStatus())
+        if (!SkipRoll(inactivePlayer))
         {
-            Debug.Log("Player is stunned.");
-            return;
+            diceManager.StartFullRoll();
+
+            while (diceManager.IsRolling)
+                yield return null;
+        }
+        else
+        {
+            Debug.Log("Defence roll skipped.");
         }
     }
 
-    public void DiscardPhase()
+    private IEnumerator DiscardPhase()
     {
         currentPhase = GamePhase.Discard;
-
-        cardManager.StartDiscardPhase();
+        yield return null;
     }
 
-    public void Passive()
-    {
-        currentPhase = GamePhase.Passive;
-    }
+    // =========================================================
+    // TARGET SELECTION
+    // =========================================================
 
-    public void NextPhase()
+    public IEnumerator SelectTarget(Action<CharacterState> onSelected)
     {
-        switch (currentPhase)
+        selectedTarget = null;
+
+        playerSelectionPanel.SetActive(true);
+
+        while (selectedTarget == null)
         {
-            case GamePhase.Income:
-                MainPhase();
-                break;
+            if (Input.GetMouseButtonDown(0))
+            {
+                PointerEventData data = new PointerEventData(eventSystem);
+                data.position = Input.mousePosition;
 
-            case GamePhase.Main:
-                RollPhaseOffence();
-                break;
+                List<RaycastResult> results = new();
+                uiRaycaster.Raycast(data, results);
 
-            case GamePhase.RollOffence:
-                DiscardPhase();
-                break;
+                foreach (var r in results)
+                {
+                    TextMeshProUGUI tmp = r.gameObject.GetComponentInParent<TextMeshProUGUI>();
 
-            case GamePhase.Discard:
-                Passive();
-                break;
+                    if (tmp == null) continue;
 
-            case GamePhase.Passive:
-                IncomePhase();
-                break;
+                    if (tmp.text == "You")
+                    {
+                        selectedTarget = playerState;
+                        break;
+                    }
+
+                    if (tmp.text == "Opponent")
+                    {
+                        selectedTarget = opponentState;
+                        break;
+                    }
+                }
+            }
+
+            yield return null;
         }
+
+        playerSelectionPanel.SetActive(false);
+
+        onSelected?.Invoke(selectedTarget);
+    }
+
+    // =========================================================
+    // CARD EXECUTION ENTRY POINT
+    // =========================================================
+
+    public void PlayCard(Card card, CharacterState owner)
+    {
+        StartCoroutine(PlayCardRoutine(card, owner));
+    }
+
+    private IEnumerator PlayCardRoutine(Card card, CharacterState owner)
+    {
+        CharacterState target = opponentState;
+
+        if (RequiresTargetSelection(card))
+        {
+            yield return SelectTarget(t => target = t);
+        }
+
+        yield return cardExecutor.ExecuteCard(
+            card,
+            owner,
+            target,
+            diceManager,
+            this
+        );
+
+        cardManager?.DiscardCardAfterPlay(owner);
+    }
+
+    private bool RequiresTargetSelection(Card card)
+    {
+        return true;
+    }
+
+    // =========================================================
+    // WRAPPERS
+    // =========================================================
+
+    public void Damage(CharacterState target, DamagePacket packet)
+    {
+        target.TakeDamage(packet);
+    }
+
+    public void Heal(CharacterState target, int amount)
+    {
+        target.Heal(amount);
+    }
+
+    public void GainCP(CharacterState target, int amount)
+    {
+        target.GainCP(amount);
+    }
+
+    public bool SpendCP(CharacterState target, int amount)
+    {
+        return target.SpendCP(amount);
     }
 }

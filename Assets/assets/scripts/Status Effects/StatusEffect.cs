@@ -5,15 +5,17 @@ public abstract class StatusEffect : ScriptableObject
     [Header("Info")]
     public string statusName;
 
-    public Sprite icon;
-
     [TextArea]
     public string description;
 
+    [Header("Visuals")]
+    public GameObject tokenPrefab;
+
     [Header("Defaults")]
     public int defaultDuration = 1;
-
     public int maxStacks = 1;
+
+    public virtual bool ConsumeOnUse => false;
 
     // Called when first applied
     public virtual void OnApply(CharacterState target)
@@ -54,7 +56,7 @@ public abstract class StatusEffect : ScriptableObject
         return false;
     }
 
-        public virtual bool PreventsOffensiveRollDamage()
+    public virtual bool PreventsOffensiveRollDamage()
     {
         return false;
     }

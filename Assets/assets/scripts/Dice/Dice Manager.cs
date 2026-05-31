@@ -34,12 +34,28 @@ public class DiceManager : MonoBehaviour
     [Header("Managers")]
     public ControlManager controlManager;
 
+    public List<string> lastResults = new();
+
     [Header("Modifiers")]
     private Queue<string> forcedFaces = new();
 
     private int bonusRerolls = 0;
 
     private DiceModificationRequest activeModificationRequest;
+
+    public enum RollMode
+    {
+        None,
+        RollAll,
+        CardRoll,
+        SelectionRoll
+    }
+
+    public RollMode currentRollMode;
+
+    private bool isRolling = false;
+
+    public bool IsRolling => isRolling;
 
     void Start()
     {
@@ -65,6 +81,35 @@ public class DiceManager : MonoBehaviour
         scriptsArray = foundScripts.ToArray();
     }
 
+    public void StartFullRoll()
+    {
+        currentRollMode = RollMode.RollAll;
+
+        GameObject[] allDice = Dice;
+
+        RollAndCheckDice(allDice, (results) =>
+        {
+            Debug.Log("Full roll complete");
+        });
+    }
+
+    public void RollDiceFromCard(int amount, Action<List<string>> callback)
+    {
+        currentRollMode = RollMode.CardRoll;
+
+        RollAndCheckDice(amount, (results) =>
+        {
+            currentRollMode = RollMode.None;
+            callback?.Invoke(results);
+        });
+    }
+
+    public void StartSelectionRoll()
+    {
+        currentRollMode = RollMode.SelectionRoll;
+        diceToRoll.Clear();
+    }
+
     void Update()
     {
         // if (controlManager.currentPhase != ControlManager.GamePhase.RollOffence)
@@ -78,8 +123,14 @@ public class DiceManager : MonoBehaviour
             });
         }
 
+        if (currentRollMode != RollMode.SelectionRoll)
+            return;
+
         if (Input.GetMouseButtonDown(0))
         {
+            if (isRolling)
+                return;
+
             PointerEventData pointerData = new PointerEventData(EventSystem.current);
             pointerData.position = Input.mousePosition;
 
@@ -171,13 +222,18 @@ public class DiceManager : MonoBehaviour
 
     public void RollAndCheckDice(int numberOfDice, Action<List<string>> onResultsReady)
     {
-        print(numberOfDice);
+        if (isRolling)
+            return;
+        isRolling = true;
         StartCoroutine(WaitAndGetResults(numberOfDice, onResultsReady));
+
     }
 
     public void RollAndCheckDice(GameObject[] dice, Action<List<string>> onResultsReady)
     {
-        print("check");
+        if (isRolling)
+            return;
+        isRolling = true;
         StartCoroutine(WaitAndGetResults(dice, onResultsReady));
     }
 
@@ -217,6 +273,8 @@ public class DiceManager : MonoBehaviour
 
         List<string> finalResults = GetDiceResults(numberOfDice);
 
+        lastResults = finalResults;
+
         yield return new WaitForSeconds(2.5f);
 
         foreach (GameObject die in Dice)
@@ -224,6 +282,7 @@ public class DiceManager : MonoBehaviour
             diceLauncher.ReturnDiceToOrign(die);
         }
 
+        isRolling = false;
         callback?.Invoke(finalResults);
     }
 
@@ -273,6 +332,8 @@ public class DiceManager : MonoBehaviour
 
         List<string> finalResults = GetDiceResults(indexes.ToArray());
 
+        lastResults = finalResults;
+
         yield return new WaitForSeconds(2.5f);
 
         foreach (GameObject die in dice)
@@ -280,6 +341,7 @@ public class DiceManager : MonoBehaviour
             diceLauncher.ReturnDiceToOrign(die);
         }
 
+        isRolling = false;
         callback?.Invoke(finalResults);
     }
 
@@ -332,5 +394,78 @@ public class DiceManager : MonoBehaviour
         }
 
         return result;
+    }
+
+    public void RerollSelectedDice(List<GameObject> selectedDice, int maxRerolls, Action<List<string>> callback)
+    {
+        if (isRolling)
+            return;
+
+        StartCoroutine(RerollRoutine(selectedDice, maxRerolls, callback));
+    }
+
+    private IEnumerator RerollRoutine(List<GameObject> selectedDice, int maxRerolls, Action<List<string>> callback)
+    {
+        isRolling = true;
+
+        // 1. CLAMP LIST SIZE (REMOVE FROM END)
+        if (selectedDice.Count > maxRerolls)
+        {
+            int removeCount = selectedDice.Count - maxRerolls;
+
+            for (int i = 0; i < removeCount; i++)
+            {
+                selectedDice.RemoveAt(selectedDice.Count - 1);
+            }
+        }
+
+        List<int> indexes = new();
+
+        // 2. VALIDATE + LAUNCH
+        foreach (GameObject die in selectedDice)
+        {
+            int index = Array.IndexOf(Dice, die);
+
+            if (index != -1)
+            {
+                indexes.Add(index);
+                diceLauncher.Launch(Dice[index]);
+            }
+        }
+
+        yield return new WaitForSeconds(1f);
+
+        // 3. WAIT FOR STOP
+        bool allStopped = false;
+
+        while (!allStopped)
+        {
+            allStopped = true;
+
+            foreach (int i in indexes)
+            {
+                Rigidbody rb = scriptsArray[i].GetRigidbody();
+
+                if (rb != null &&
+                    !rb.IsSleeping() &&
+                    rb.velocity.sqrMagnitude > 0.001f)
+                {
+                    allStopped = false;
+                    break;
+                }
+            }
+
+            yield return null;
+        }
+
+        // 4. GET RESULTS
+        List<string> results = GetDiceResults(indexes.ToArray());
+        lastResults = results;
+
+        yield return new WaitForSeconds(0.5f);
+
+        isRolling = false;
+
+        callback?.Invoke(results);
     }
 }

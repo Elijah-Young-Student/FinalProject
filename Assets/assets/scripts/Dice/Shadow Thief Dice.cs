@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using UnityEngine;
 
 public class ShadowThiefDice : MonoBehaviour, IDice
@@ -18,6 +20,8 @@ public class ShadowThiefDice : MonoBehaviour, IDice
     public Vector3 Origin;
 
     private string forcedFace = "";
+
+    private string[] faceNames = { "3b", "5c", "6s", "1d", "2d", "4b" };
 
     public void ForceFace(string face)
     {
@@ -47,8 +51,6 @@ public class ShadowThiefDice : MonoBehaviour, IDice
         Vector3 bestFaceNormal = Vector3.zero;
         string bestFaceName = "";
 
-        string[] faceNames = { "3b", "5c", "6s", "1d", "2d", "4b" };
-
         for (int i = 0; i < faceNormals.Length; i++)
         {
             // Convert the local face normal to world space
@@ -67,5 +69,27 @@ public class ShadowThiefDice : MonoBehaviour, IDice
 
         // Debug.Log($"Most vertical face: {bestFaceName} (dot: {bestDot:F3})");
         return bestFaceName;
+    }
+
+    public IEnumerator AlignToFace(string face, float speed = 100f)
+    {
+        Vector3 localNormal = faceNormals[Array.IndexOf(faceNames, face)];
+        Vector3 worldNormal = transform.TransformDirection(localNormal);
+
+        Quaternion targetRot =
+            Quaternion.FromToRotation(transform.up, worldNormal) * transform.rotation;
+
+        while (Quaternion.Angle(transform.rotation, targetRot) > 0.01f)
+        {
+            transform.rotation = Quaternion.RotateTowards(
+                transform.rotation,
+                targetRot,
+                speed * Time.deltaTime
+            );
+
+            yield return null;
+        }
+
+        transform.rotation = targetRot;
     }
 }

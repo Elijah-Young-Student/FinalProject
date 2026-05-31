@@ -1,17 +1,20 @@
+using System.Collections;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Card Effects/Damage")]
 public class DamageEffect : CardEffect
 {
-    public int bonusDamage;
+    public int amount;
 
-    public override void OnApply(CharacterState owner)
+    public override IEnumerator Execute(CardContext context)
     {
-        owner.outgoingDamageBonus += bonusDamage;
-    }
+        context.target.TakeDamage(new DamagePacket
+        {
+            amount = amount,
+            target = context.target,
+            damageType = DamageType.Normal
+        });
 
-    public override void OnRemove(CharacterState owner)
-    {
-        owner.outgoingDamageBonus -= bonusDamage;
+        yield return null;
     }
 }

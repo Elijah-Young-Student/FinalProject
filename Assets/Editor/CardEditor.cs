@@ -1,112 +1,76 @@
-using UnityEditor;
-using UnityEngine;
+// using UnityEditor;
+// using UnityEngine;
 
-[CustomEditor(typeof(Card))]
-public class CardEditor : Editor
-{
-    public override void OnInspectorGUI()
-    {
-        Card card = (Card)target;
+// [CustomEditor(typeof(Card))]
+// public class CardEditor : Editor
+// {
+//     public override void OnInspectorGUI()
+//     {
+//         Card card = (Card)target;
 
-        // Sync cardName from the GameObject name
-        if (card.cardName != card.name)
-        {
-            card.cardName = card.name;
-            EditorUtility.SetDirty(card);
-        }
+//         // Sync cardName from the GameObject name
+//         if (card.cardName != card.name)
+//         {
+//             card.cardName = card.name;
+//             EditorUtility.SetDirty(card);
+//         }
 
-        Color bgColor = GetBackgroundColor(card.actionType);
+//         Color bgColor = GetBackgroundColor(card.actionType);
 
-        GUI.backgroundColor = bgColor;
+//         GUI.backgroundColor = bgColor;
 
-        GUILayout.BeginVertical("box");
+//         GUILayout.BeginVertical("box");
 
-        GUI.backgroundColor = Color.white;
+//         GUI.backgroundColor = Color.white;
 
-        GUILayout.Label(
-            string.IsNullOrEmpty(card.cardName)
-                ? "Unnamed Card"
-                : card.cardName,
-            EditorStyles.boldLabel
-        );
+//         GUILayout.Label(
+//             string.IsNullOrEmpty(card.cardName)
+//                 ? "Unnamed Card"
+//                 : card.cardName,
+//             EditorStyles.boldLabel
+//         );
 
-        serializedObject.Update();
+//         serializedObject.Update();
 
-        EditorGUILayout.PropertyField(
-            serializedObject.FindProperty("cardPrefab")
-        );
+//         // Display cardName as read-only since it mirrors the GameObject name
+//         EditorGUI.BeginDisabledGroup(true);
+//         EditorGUILayout.PropertyField(
+//             serializedObject.FindProperty("cardName")
+//         );
+//         EditorGUI.EndDisabledGroup();
 
-        // Display cardName as read-only since it mirrors the GameObject name
-        EditorGUI.BeginDisabledGroup(true);
-        EditorGUILayout.PropertyField(
-            serializedObject.FindProperty("cardName")
-        );
-        EditorGUI.EndDisabledGroup();
+//         EditorGUILayout.PropertyField(
+//             serializedObject.FindProperty("cost")
+//         );
 
-        EditorGUILayout.PropertyField(
-            serializedObject.FindProperty("cost")
-        );
+//         EditorGUILayout.PropertyField(
+//             serializedObject.FindProperty("actionType")
+//         );
 
-        SerializedProperty cardDraws =
-            serializedObject.FindProperty("cardDraws");
+//         EditorGUILayout.PropertyField(
+//             serializedObject.FindProperty("cardType")
+//         );
 
-        EditorGUILayout.PropertyField(cardDraws);
+//         serializedObject.ApplyModifiedProperties();
 
-        if (cardDraws.boolValue)
-        {
-            EditorGUILayout.PropertyField(
-                serializedObject.FindProperty("cardsToDraw1")
-            );
+//         GUILayout.EndVertical();
+//     }
 
-            EditorGUILayout.PropertyField(
-                serializedObject.FindProperty("cardsToDraw2")
-            );
-        }
+//     private Color GetBackgroundColor(Card.ActionType actionType)
+//     {
+//         switch (actionType)
+//         {
+//             case Card.ActionType.Instant:
+//                 return new Color(1f, 0.5f, 0.5f);
 
-        SerializedProperty cpChange =
-            serializedObject.FindProperty("CPChange");
+//             case Card.ActionType.MainPhase:
+//                 return new Color(0.5f, 0.7f, 1f);
 
-        EditorGUILayout.PropertyField(cpChange);
+//             case Card.ActionType.RollPhase:
+//                 return new Color(1f, 0.7f, 0.3f);
 
-        if (cpChange.boolValue)
-        {
-            EditorGUILayout.PropertyField(
-                serializedObject.FindProperty("CPToGain1")
-            );
-
-            EditorGUILayout.PropertyField(
-                serializedObject.FindProperty("CPToGain2")
-            );
-        }
-
-        EditorGUILayout.PropertyField(
-            serializedObject.FindProperty("actionType")
-        );
-
-        EditorGUILayout.PropertyField(
-            serializedObject.FindProperty("cardType")
-        );
-
-        serializedObject.ApplyModifiedProperties();
-
-        GUILayout.EndVertical();
-    }
-
-    private Color GetBackgroundColor(Card.ActionType actionType)
-    {
-        switch (actionType)
-        {
-            case Card.ActionType.Instant:
-                return new Color(1f, 0.5f, 0.5f);
-
-            case Card.ActionType.MainPhase:
-                return new Color(0.5f, 0.7f, 1f);
-
-            case Card.ActionType.RollPhase:
-                return new Color(1f, 0.7f, 0.3f);
-
-            default:
-                return Color.white;
-        }
-    }
-}
+//             default:
+//                 return Color.white;
+//         }
+//     }
+// }

@@ -1,12 +1,12 @@
-// using System.Collections.Generic;
+using System.Collections.Generic;
 
-// public class CardContext
-// {
-//    public ControlManager sourcePlayer;
+public class CardContext
+{
+    public CharacterState owner;
+    public CharacterState target;
 
-//    public ControlManager targetPlayer;
+    public DiceManager diceManager;
+    public ControlManager controlManager;
 
-//    public List<Dice> selectedDice = new();
-
-//    public Card playedCard;
-// }
+    public Dictionary<string, object> data = new();
+}

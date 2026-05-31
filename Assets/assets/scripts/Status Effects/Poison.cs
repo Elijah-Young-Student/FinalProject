@@ -7,11 +7,12 @@ public class PoisonEffect : StatusEffect
 
     public override void OnTick(CharacterState target)
     {
-        int stacks =
-            target.GetStatusStacks(statusName);
+        int stacks = target.GetStatusStacks(statusName);
 
-        int totalDamage =
-            stacks * damagePerStack;
+        if (stacks <= 0)
+            return;
+
+        int totalDamage = stacks * damagePerStack;
 
         DamagePacket packet = new DamagePacket
         {
@@ -23,11 +24,5 @@ public class PoisonEffect : StatusEffect
         };
 
         target.TakeDamage(packet);
-
-        Debug.Log(
-            target.name +
-            " takes " +
-            totalDamage +
-            " poison damage.");
     }
 }

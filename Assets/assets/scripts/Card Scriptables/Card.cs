@@ -1,33 +1,34 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Card", menuName = "Cards/Card")]
+[CreateAssetMenu(menuName = "Cards/Card")]
 public class Card : ScriptableObject
 {
-    [Header("Basic Info")]
-    public string cardName;
-
-    public int cost;
-
-    [Header("Card Type")]
-    public ActionType actionType;
-
-    public CardType cardType;
-
-    [Header("Effects")]
-    public List<CardEffect> effects;
+    public enum CardType
+    {
+        Action,
+        Upgrade
+    }
 
     public enum ActionType
     {
         Instant,
         MainPhase,
-        RollPhase,
-        Passive
+        RollPhase
     }
+    
+    [Header("Identity")]
+    public string cardName;
 
-    public enum CardType
-    {
-        Upgrade,
-        Action
-    }
+    [Header("Core")]
+    public int cost;
+
+    public CardType cardType;
+    public ActionType actionType;
+
+    [Header("Targeting")]
+    public PlayerType targetType;
+
+    [Header("Effects")]
+    public List<CardEffect> effects;
 }

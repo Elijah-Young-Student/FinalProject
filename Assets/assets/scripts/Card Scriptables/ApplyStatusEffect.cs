@@ -1,17 +1,15 @@
+using System.Collections;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Card Effects/Apply Status")]
 public class ApplyStatusEffect : CardEffect
 {
-    public StatusEffect statusToApply;
-
+    public StatusEffect status;
     public int stacks = 1;
 
-    public override void OnPlay(
-        CharacterState owner,
-        DiceManager diceManager,
-        ControlManager controlManager)
+    public override IEnumerator Execute(CardContext context)
     {
-        owner.AddStatus(statusToApply, stacks);
+        context.target.AddStatus(status, stacks);
+        yield return null;
     }
 }
